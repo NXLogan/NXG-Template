@@ -157,10 +157,10 @@ function Home() {
 function SplitReveal({ children }: { children: React.ReactNode }) {
   return (
     <motion.h2
-      initial={{ opacity: 0, y: 40 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ duration: 1, ease: [0.7, 0, 0.2, 1] }}
+      initial={{ clipPath: "inset(0 0 100% 0)", opacity: 0 }}
+      whileInView={{ clipPath: "inset(0 0 0% 0)", opacity: 1 }}
+      viewport={{ once: true, margin: "-100px" }}
+      transition={{ duration: 1.3, ease: [0.7, 0, 0.2, 1] }}
       className="display text-white text-6xl md:text-9xl leading-[0.95]"
     >
       {children}
