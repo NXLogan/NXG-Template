@@ -57,14 +57,45 @@ function Products() {
         </div>
       </div>
 
-      <section className="px-6 md:px-10 py-16">
+      <section className="relative px-6 md:px-10 py-16">
+        {/* Dramatic full-width hover overlay */}
+        <AnimatePresence>
+          {hovered && (
+            <motion.div
+              key={hovered}
+              className="pointer-events-none fixed inset-0 z-10 flex items-center justify-center overflow-hidden"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.4 }}
+            >
+              <div className="absolute inset-0 bg-black/70 backdrop-blur-2xl" />
+              <motion.span
+                initial={{ y: 40, opacity: 0 }}
+                animate={{ y: 0, opacity: 0.15 }}
+                exit={{ y: -20, opacity: 0 }}
+                transition={{ duration: 0.6, ease: [0.7, 0, 0.2, 1] }}
+                className="display text-white text-[18vw] leading-none tracking-tighter select-none whitespace-nowrap"
+              >
+                {hovered}
+              </motion.span>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
         <AnimatePresence mode="popLayout">
           <motion.div
             key={f}
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+            className="relative z-20 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
           >
             {list.map((p, i) => (
-              <ProductCard key={p.id} p={p} index={i} />
+              <div
+                key={p.id}
+                onMouseEnter={() => setHovered(p.title)}
+                onMouseLeave={() => setHovered((h) => (h === p.title ? null : h))}
+              >
+                <ProductCard p={p} index={i} />
+              </div>
             ))}
           </motion.div>
         </AnimatePresence>
