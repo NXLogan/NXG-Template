@@ -18,22 +18,41 @@ import { CursorDot } from "@/components/CursorDot";
 
 function NotFoundComponent() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background px-4">
-      <div className="max-w-md text-center">
-        <h1 className="text-7xl font-bold text-foreground">404</h1>
-        <h2 className="mt-4 text-xl font-semibold text-foreground">Page not found</h2>
-        <p className="mt-2 text-sm text-muted-foreground">
-          The page you're looking for doesn't exist or has been moved.
-        </p>
-        <div className="mt-6">
-          <Link
-            to="/"
-            className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
-          >
-            Go home
-          </Link>
+    <div className="relative flex min-h-screen flex-col items-center justify-center bg-black text-white overflow-hidden px-6">
+      <div className="mono-label text-white/40 absolute top-24 left-6 md:left-10">ERROR / 404 / NULL</div>
+      <div className="mono-label text-white/40 absolute top-24 right-6 md:right-10">TRANSMISSION LOST</div>
+
+      <div className="relative">
+        <h1 className="display text-white text-[28vw] md:text-[22vw] leading-[0.8] tracking-tighter text-center select-none">
+          NULL
+        </h1>
+        <div className="absolute inset-0 pointer-events-none">
+          <div
+            className="absolute left-[-10%] right-[-10%] top-1/2 h-px bg-white origin-left"
+            style={{ transform: "rotate(-18deg)" }}
+          />
         </div>
       </div>
+
+      <p className="display text-3xl md:text-5xl mt-8 text-center text-white/70">
+        Artifact not found.
+      </p>
+      <p className="max-w-md text-center text-white/50 mt-4 text-sm">
+        The object you sought has either never been released, has been withdrawn
+        from circulation, or exists at coordinates you do not yet possess.
+      </p>
+
+      <div className="mt-10 flex gap-3">
+        <Link to="/" className="mono-label bg-white text-black px-4 py-2 hover:bg-white/80 transition">
+          ← RETURN TO INDEX
+        </Link>
+        <Link to="/products" className="mono-label border border-white/40 text-white px-4 py-2 hover:border-white transition">
+          BROWSE ARTIFACTS
+        </Link>
+      </div>
+
+      <div className="mono-label text-white/40 absolute bottom-8 left-6 md:left-10">NØRMA® MMXXVI</div>
+      <div className="mono-label text-white/40 absolute bottom-8 right-6 md:right-10">NOT FOR EVERYONE</div>
     </div>
   );
 }
