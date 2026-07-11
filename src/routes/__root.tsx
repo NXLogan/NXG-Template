@@ -11,6 +11,10 @@ import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
+import { CartProvider } from "@/lib/cart";
+import { Nav } from "@/components/Nav";
+import { Preloader } from "@/components/Preloader";
+import { CursorDot } from "@/components/CursorDot";
 
 function NotFoundComponent() {
   return (
