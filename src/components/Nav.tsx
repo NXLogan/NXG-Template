@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Logo } from "./Logo";
 import { useCart } from "@/lib/cart";
@@ -14,6 +14,18 @@ const LINKS = [
 export function Nav() {
   const [open, setOpen] = useState(false);
   const { count } = useCart();
+  const prevCount = useRef(count);
+  const [pulse, setPulse] = useState(false);
+
+  useEffect(() => {
+    if (count > prevCount.current) {
+      setPulse(true);
+      const t = setTimeout(() => setPulse(false), 600);
+      prevCount.current = count;
+      return () => clearTimeout(t);
+    }
+    prevCount.current = count;
+  }, [count]);
 
   return (
     <>
@@ -31,8 +43,8 @@ export function Nav() {
               <Link
                 key={l.to}
                 to={l.to}
-                className="mono-label text-white story-link"
-                activeProps={{ className: "mono-label text-white story-link opacity-60" }}
+                className="mono-label text-white slash-link"
+                activeProps={{ className: "mono-label text-white slash-link opacity-60" }}
                 activeOptions={{ exact: true }}
               >
                 {l.label}
@@ -41,8 +53,8 @@ export function Nav() {
           </nav>
 
           <div className="flex items-center gap-4">
-            <div className="mono-label text-white">
-              CART <span className="tabular-nums">[{count.toString().padStart(2, "0")}]</span>
+            <div className="mono-label text-white flex items-center gap-1">
+              CART <span className={`tabular-nums inline-block ${pulse ? "cart-pulse" : ""}`}>[{count.toString().padStart(2, "0")}]</span>
             </div>
             <button
               onClick={() => setOpen(true)}
@@ -81,7 +93,7 @@ export function Nav() {
                   <Link
                     to={l.to}
                     onClick={() => setOpen(false)}
-                    className="display text-white text-6xl block"
+                    className="display text-white text-6xl block slash-link"
                   >
                     {l.label}
                   </Link>
