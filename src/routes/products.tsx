@@ -22,6 +22,7 @@ type Filter = (typeof FILTERS)[number];
 
 function Products() {
   const [f, setF] = useState<Filter>("ALL");
+  const [hovered, setHovered] = useState<string | null>(null);
   const list = f === "ALL" ? PRODUCTS : PRODUCTS.filter((p) => p.category === (f as Category));
 
   return (
