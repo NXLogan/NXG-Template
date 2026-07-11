@@ -22,28 +22,63 @@ function Home() {
       {/* HERO */}
       <section ref={heroRef} className="relative min-h-screen flex flex-col justify-end overflow-hidden">
         <div className="absolute top-0 left-0 right-0 h-full flex items-center justify-center pointer-events-none">
-          <motion.div style={{ y, opacity }} className="text-center">
-            <div className="mono-label text-white/50 mb-6">EDITION MMXXVI — VOL. 001</div>
-            <h1 className="display text-white text-[22vw] leading-[0.8] tracking-tighter">
-              NØRMA
-            </h1>
-            <div className="mono-label text-white/50 mt-6">
-              WE DON'T SELL PRODUCTS · WE DISTRIBUTE ARTIFACTS
+          <motion.div style={{ y, opacity }} className="text-center relative">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 2.6, duration: 0.6 }}
+              className="mono-label text-white/50 mb-6"
+            >
+              EDITION MMXXVI — VOL. 001
+            </motion.div>
+
+            <div className="relative inline-block">
+              <motion.h1
+                initial={{ scale: 1.3, opacity: 0, letterSpacing: "0.05em" }}
+                animate={{ scale: 1, opacity: 1, letterSpacing: "-0.04em" }}
+                transition={{ delay: 2.4, duration: 1.6, ease: [0.7, 0, 0.2, 1] }}
+                className="display text-white text-[26vw] leading-[0.8] tracking-tighter"
+              >
+                NØRMA
+              </motion.h1>
+              {/* diagonal slit sweep */}
+              <div className="absolute inset-0 pointer-events-none overflow-hidden">
+                <div className="slit-sweep absolute top-1/2 left-0 right-0 h-[2px] bg-white origin-center" style={{ animationDelay: "2.8s" }} />
+              </div>
             </div>
+
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 3.4, duration: 0.8 }}
+              className="mono-label text-white/50 mt-6"
+            >
+              WE DON'T SELL PRODUCTS · WE DISTRIBUTE ARTIFACTS
+            </motion.div>
           </motion.div>
         </div>
 
         <div className="relative z-10 px-6 md:px-10 pb-10 flex items-end justify-between">
-          <div className="max-w-xs">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 3.6, duration: 0.8 }}
+            className="max-w-xs"
+          >
             <div className="mono-label text-white/60 mb-2">↓ SCROLL</div>
             <p className="text-white/70 text-sm">
               A digital shop reconceived as cultural artifact. Enter at your own risk of taste.
             </p>
-          </div>
-          <div className="mono-label text-white/60 text-right hidden md:block">
+          </motion.div>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 3.6, duration: 0.8 }}
+            className="mono-label text-white/60 text-right hidden md:block"
+          >
             <div>N 52°31′ · E 13°24′</div>
             <div>SIGNAL / 00</div>
-          </div>
+          </motion.div>
         </div>
       </section>
 
