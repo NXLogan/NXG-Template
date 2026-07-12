@@ -6,7 +6,7 @@ import { defineConfig } from "vite";
 import tsConfigPaths from "vite-tsconfig-paths";
 
 const githubPages = process.env.NITRO_PRESET === "github_pages";
-const ghBase = "/n-rma-artifacts/";
+const ghBase = "/NXG-Template/";
 
 export default defineConfig(({ command }) => ({
   base: githubPages ? ghBase : "/",

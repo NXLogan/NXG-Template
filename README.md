@@ -1,9 +1,9 @@
-# NAME
+# NXG Template
 
-Site vitrine e-commerce artistique pour **NAME** — artefacts culturels, esthétique mangaka / encre japonaise, bilingue FR/EN.
+Site vitrine e-commerce artistique pour **NXG Template** — artefacts culturels, esthétique mangaka / encre japonaise, bilingue FR/EN.
 
-**Site en ligne :** https://nxlogan.github.io/n-rma-artifacts/  
-**Code source :** https://github.com/NXLogan/n-rma-artifacts
+**Site en ligne :** https://nxlogan.github.io/NXG-Template/  
+**Code source :** https://github.com/NXLogan/NXG-Template
 
 ## Stack
 
@@ -82,7 +82,7 @@ NITRO_PRESET=github_pages npm run build:pages
 
 Les fichiers statiques sont dans `dist/client/` (`index.html`, `404.html` pour le routing SPA).
 
-URL publique : https://nxlogan.github.io/n-rma-artifacts/
+URL publique : https://nxlogan.github.io/NXG-Template/
 
 Pour le formulaire contact en production, ajoute le secret GitHub `DISCORD_WEBHOOK_URL` (injecté comme `VITE_DISCORD_WEBHOOK_URL` au build). Sans webhook, le message est copié dans le presse-papiers et Discord s’ouvre.
 
