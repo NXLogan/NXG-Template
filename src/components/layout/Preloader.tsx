@@ -40,11 +40,11 @@ export function Preloader({ onComplete }: { onComplete?: () => void }) {
 
           <Logo size={72} />
 
-          <div className="mt-14 flex items-baseline gap-2">
-            <span className="display silver-text text-[120px] md:text-[200px] tabular-nums">
+          <div className="preloader-counter-wrap">
+            <span className="preloader-counter tabular-nums" aria-hidden>
               {pct.toString().padStart(3, "0")}
             </span>
-            <span className="mono-label text-foreground/50">%</span>
+            <span className="preloader-counter-suffix">%</span>
           </div>
 
           <div className="absolute bottom-8 left-8 right-8 flex items-center justify-between mono-label text-foreground/40">

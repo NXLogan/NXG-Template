@@ -195,6 +195,49 @@
   margin-inline: -0.06em;
 }
 
+/* Preloader % — no background-clip (clips glyph bottoms on WebKit) */
+.preloader-counter-wrap {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 0.4rem;
+  overflow: visible;
+  margin-top: 3.5rem;
+  padding-bottom: 1.5rem;
+}
+
+.preloader-counter {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  font-size: clamp(5.5rem, 16vw, 9.5rem);
+  line-height: 1.18;
+  display: inline-block;
+  overflow: visible;
+  color: oklch(0.94 0.028 88);
+  -webkit-text-fill-color: oklch(0.94 0.028 88);
+  text-shadow:
+    0 -1px 0 oklch(0.97 0.03 88 / 0.55),
+    0 2px 0 oklch(0.58 0.21 28 / 0.45),
+    0 6px 28px oklch(0.58 0.21 28 / 0.28);
+}
+
+@media (min-width: 768px) {
+  .preloader-counter {
+    font-size: clamp(7rem, 14vw, 9.5rem);
+    line-height: 1.2;
+  }
+}
+
+.preloader-counter-suffix {
+  font-family: var(--font-mono);
+  font-size: clamp(10px, 2.5vw, 11px);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: oklch(0.72 0.04 85 / 0.55);
+  transform: translateY(-0.35em);
+}
+
 @utility hero-silver {
   display: inline-block;
   line-height: 1.1;
