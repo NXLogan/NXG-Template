@@ -5,6 +5,7 @@ import { useI18n } from "@/lib/i18n/context";
 import {
   PAGE_COVER_MS,
   PAGE_REVEAL_MS,
+  normalizeAppPath,
   shouldPageTransition,
 } from "@/lib/ui/page-transition";
 
@@ -198,12 +199,13 @@ export function PageTransitionShell({ children }: { children: ReactNode }) {
   const { rewritePhase } = useI18n();
   const prevPath = useRef(pathname);
   const pathnameRef = useRef(pathname);
-  const coverTimer = useRef<number | null>(null);
   const revealTimer = useRef<number | null>(null);
+  const phaseRef = useRef<Phase>("idle");
   const [phase, setPhase] = useState<Phase>("idle");
   const [transitionKey, setTransitionKey] = useState(0);
 
   pathnameRef.current = pathname;
+  phaseRef.current = phase;
 
   const beginCover = () => {
     setTransitionKey((k) => k + 1);
@@ -222,8 +224,8 @@ export function PageTransitionShell({ children }: { children: ReactNode }) {
       const href = anchor.getAttribute("href");
       if (!href || href.startsWith("http") || href.startsWith("#") || href.startsWith("mailto:")) return;
 
-      const to = href.split("?")[0].split("#")[0] || "/";
-      const from = pathnameRef.current;
+      const to = normalizeAppPath(href);
+      const from = normalizeAppPath(pathnameRef.current);
 
       if (!shouldPageTransition(from, to)) return;
 
@@ -235,28 +237,25 @@ export function PageTransitionShell({ children }: { children: ReactNode }) {
   }, [rewritePhase]);
 
   useLayoutEffect(() => {
-    if (coverTimer.current !== null) {
-      window.clearTimeout(coverTimer.current);
-      coverTimer.current = null;
-    }
-
     if (rewritePhase !== "idle") {
       prevPath.current = pathname;
       return;
     }
 
-    const from = prevPath.current;
-    const to = pathname;
+    const from = normalizeAppPath(prevPath.current);
+    const to = normalizeAppPath(pathname);
 
     if (from === to) return;
 
     if (!shouldPageTransition(from, to)) {
-      prevPath.current = to;
+      prevPath.current = pathname;
       setPhase("idle");
       return;
     }
 
-    prevPath.current = to;
+    prevPath.current = pathname;
+
+    if (phaseRef.current !== "idle") return;
 
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (reduced) {
@@ -266,27 +265,19 @@ export function PageTransitionShell({ children }: { children: ReactNode }) {
     }
 
     window.scrollTo(0, 0);
+    beginCover();
+  }, [pathname, rewritePhase]);
 
-    if (phase === "idle") {
-      beginCover();
-    }
+  /* Cover → reveal (must not share an effect that re-runs when phase flips to covering) */
+  useEffect(() => {
+    if (phase !== "covering") return;
 
-    if (coverTimer.current !== null) {
-      window.clearTimeout(coverTimer.current);
-    }
-
-    coverTimer.current = window.setTimeout(() => {
+    const timer = window.setTimeout(() => {
       setPhase("revealing");
-      coverTimer.current = null;
     }, PAGE_COVER_MS);
 
-    return () => {
-      if (coverTimer.current !== null) {
-        window.clearTimeout(coverTimer.current);
-        coverTimer.current = null;
-      }
-    };
-  }, [pathname, rewritePhase, phase]);
+    return () => window.clearTimeout(timer);
+  }, [phase, transitionKey]);
 
   useEffect(() => {
     if (phase !== "revealing") return;
@@ -302,7 +293,18 @@ export function PageTransitionShell({ children }: { children: ReactNode }) {
         revealTimer.current = null;
       }
     };
-  }, [phase]);
+  }, [phase, transitionKey]);
+
+  /* Failsafe — never leave the ink overlay stuck */
+  useEffect(() => {
+    if (phase === "idle") return;
+
+    const failsafe = window.setTimeout(() => {
+      setPhase("idle");
+    }, PAGE_COVER_MS + PAGE_REVEAL_MS + 1500);
+
+    return () => window.clearTimeout(failsafe);
+  }, [phase, transitionKey]);
 
   useEffect(() => {
     if (phase === "idle") {
