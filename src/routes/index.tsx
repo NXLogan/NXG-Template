@@ -1,11 +1,14 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { useRef } from "react";
-import { PRODUCTS } from "@/lib/products";
-import { Marquee } from "@/components/Marquee";
-import { ProductCard } from "@/components/ProductCard";
-import { Footer } from "@/components/Footer";
-import { Logo } from "@/components/Logo";
+import { useRef, useState } from "react";
+import { PRODUCTS, type Product } from "@/lib/catalog/products";
+import { Marquee } from "@/components/motion/Marquee";
+import { ProductCard } from "@/components/catalog/ProductCard";
+import { ProductModal } from "@/components/catalog/ProductModal";
+import { Footer } from "@/components/layout/Footer";
+import { Logo } from "@/components/brand/Logo";
+import { LanguageSwitcher } from "@/components/i18n/LanguageSwitcher";
+import { useI18n } from "@/lib/i18n/context";
 
 export const Route = createFileRoute("/")({
   component: Home,
@@ -16,139 +19,124 @@ function Home() {
   const { scrollYProgress } = useScroll({ target: heroRef, offset: ["start start", "end start"] });
   const y = useTransform(scrollYProgress, [0, 1], [0, -200]);
   const opacity = useTransform(scrollYProgress, [0, 0.8], [1, 0]);
+  const { t, ti } = useI18n();
+  const [selected, setSelected] = useState<Product | null>(null);
 
   return (
-    <main className="relative">
-      {/* HERO */}
-      <section ref={heroRef} className="relative min-h-screen flex flex-col justify-end overflow-hidden">
-        <div className="absolute top-0 left-0 right-0 h-full flex items-center justify-center pointer-events-none">
-          <motion.div style={{ y, opacity }} className="text-center relative">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 2.6, duration: 0.6 }}
-              className="mono-label text-white/50 mb-6"
-            >
-              EDITION MMXXVI — VOL. 001
-            </motion.div>
+    <main className="relative overflow-x-clip">
+      <section ref={heroRef} className="relative min-h-[100dvh] flex flex-col justify-end">
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute top-[15%] left-[10%] w-[40vw] h-[40vw] max-w-[500px] max-h-[500px] rounded-full bg-foreground/4 blur-[80px] float" />
+          <div className="absolute bottom-[20%] right-[5%] w-[35vw] h-[35vw] max-w-[420px] max-h-[420px] rounded-full bg-foreground/3 blur-[100px]" style={{ animationDelay: "2s" }} />
+        </div>
 
-            <div className="relative inline-block">
+        <div className="absolute top-[calc(6rem+var(--safe-top))] right-[var(--page-gutter)] hidden md:block">
+          <LanguageSwitcher />
+        </div>
+
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none w-full px-[var(--page-gutter)]">
+          <motion.div style={{ y, opacity }} className="text-center relative w-full max-w-full">
+            <div className="relative inline-flex justify-center w-full max-w-[calc(100vw-var(--page-gutter)*2)]">
               <motion.h1
-                initial={{ scale: 1.3, opacity: 0, letterSpacing: "0.05em" }}
-                animate={{ scale: 1, opacity: 1, letterSpacing: "-0.04em" }}
+                initial={{ opacity: 0, letterSpacing: "0.02em" }}
+                animate={{ opacity: 1, letterSpacing: "-0.04em" }}
                 transition={{ delay: 2.4, duration: 1.6, ease: [0.7, 0, 0.2, 1] }}
-                className="display text-white text-[26vw] leading-[0.8] tracking-tighter"
+                className="hero-silver hero-title max-w-full text-balance"
               >
-                NØRMA
+                {t.brand.hero}
               </motion.h1>
-              {/* diagonal slit sweep */}
-              <div className="absolute inset-0 pointer-events-none overflow-hidden">
-                <div className="slit-sweep absolute top-1/2 left-0 right-0 h-[2px] bg-white origin-center" style={{ animationDelay: "2.8s" }} />
+              <div className="absolute inset-0 pointer-events-none flex items-center overflow-visible">
+                <div className="slit-sweep w-full h-px shimmer-line origin-center" style={{ animationDelay: "2.8s" }} />
               </div>
             </div>
 
-            <motion.div
+            <motion.p
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 3.4, duration: 0.8 }}
-              className="mono-label text-white/50 mt-6"
+              className="mono-label text-foreground/50 mt-6 max-w-lg mx-auto"
             >
-              WE DON'T SELL PRODUCTS · WE DISTRIBUTE ARTIFACTS
-            </motion.div>
+              {t.hero.subtitle}
+            </motion.p>
           </motion.div>
         </div>
 
-        <div className="relative z-10 px-6 md:px-10 pb-10 flex items-end justify-between">
+        <div className="relative z-10 page-gutter-x pb-[max(2.5rem,var(--safe-bottom))] flex flex-col sm:flex-row items-start sm:items-end justify-between gap-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 3.6, duration: 0.8 }}
             className="max-w-xs"
           >
-            <div className="mono-label text-white/60 mb-2">↓ SCROLL</div>
-            <p className="text-white/70 text-sm">
-              A digital shop reconceived as cultural artifact. Enter at your own risk of taste.
-            </p>
+            <p className="mono-label text-foreground/50 mb-2">{t.hero.scroll}</p>
+            <p className="text-foreground/70 text-sm">{t.hero.scrollText}</p>
           </motion.div>
+
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 3.6, duration: 0.8 }}
-            className="mono-label text-white/60 text-right hidden md:block"
+            transition={{ delay: 3.7, duration: 0.8 }}
+            className="md:hidden shrink-0"
           >
-            <div>N 52°31′ · E 13°24′</div>
-            <div>SIGNAL / 00</div>
+            <LanguageSwitcher />
           </motion.div>
         </div>
       </section>
 
-      {/* MARQUEE */}
-      <Marquee text="ARTIFACTS · CULTURE · NOT FOR EVERYONE · NØRMA® · ARTIFACTS · CULTURE · NOT FOR EVERYONE · NØRMA® · " />
+      <Marquee text={ti(t.marquee.line1)} />
 
-      {/* 01 MANIFESTO */}
-      <section className="px-6 md:px-10 py-32 border-b border-white/10">
-        <div className="flex flex-col md:flex-row md:items-start gap-8 mb-16">
-          <div className="mono-label text-white/50">01 — MANIFESTO</div>
-          <div className="mono-label text-white/50 md:ml-auto">A DOCUMENT</div>
+      <section className="page-gutter-x py-20 md:py-32 border-b border-border relative">
+        <div className="absolute left-[var(--page-gutter)] top-20 md:top-32 bottom-20 md:bottom-32 w-px shimmer-line hidden md:block" />
+        <div className="md:pl-8">
+          <SplitReveal>
+            {t.home.manifesto1}<br/>{t.home.manifesto2}<br/>
+            <span className="text-foreground/40">{t.home.manifesto3}</span><br/>
+            {t.home.manifesto4}
+          </SplitReveal>
         </div>
-        <SplitReveal>
-          Not commerce.<br/>Culture.<br/>
-          <span className="text-white/40">We do not participate in the economy of noise.</span><br/>
-          Every artifact is a refusal.
-        </SplitReveal>
       </section>
 
-      {/* 02 ARTIFACTS */}
-      <section className="px-6 md:px-10 py-32 border-b border-white/10">
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-16">
-          <div>
-            <div className="mono-label text-white/50 mb-4">02 — ARTIFACTS</div>
-            <h2 className="display text-white text-6xl md:text-8xl">Choose your<br/><em className="not-italic text-white/40">weapon.</em></h2>
-          </div>
-          <a href="/products" className="mono-label text-white story-link">VIEW ALL →</a>
+      <section className="page-gutter-x py-20 md:py-32 border-b border-border">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 md:gap-8 mb-12 md:mb-16">
+          <h2 className="display text-foreground text-4xl sm:text-5xl md:text-7xl lg:text-8xl text-balance">
+            {t.home.artifactsTitle1}<br/>
+            <em className="not-italic text-foreground/40">{t.home.artifactsTitle2}</em>
+          </h2>
+          <Link to="/products" className="mono-label text-foreground/60 story-link">{t.home.viewAll}</Link>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
           {PRODUCTS.slice(0, 3).map((p, i) => (
-            <ProductCard key={p.id} p={p} index={i} />
+            <ProductCard key={p.id} p={p} index={i} onOpen={setSelected} />
           ))}
         </div>
       </section>
 
-      {/* MARQUEE 2 */}
-      <Marquee text="NOT COMMERCE — CULTURE — NOT COMMERCE — CULTURE — " size="text-5xl md:text-7xl" />
+      <Marquee text={t.marquee.line2} size="text-4xl sm:text-5xl md:text-6xl lg:text-7xl" variant="outline" />
 
-      {/* 03 PHILOSOPHY */}
-      <section className="px-6 md:px-10 py-32">
-        <div className="flex flex-col md:flex-row md:items-start gap-8 mb-16">
-          <div className="mono-label text-white/50">03 — PHILOSOPHY</div>
-          <div className="mono-label text-white/50 md:ml-auto">READ SLOWLY</div>
+      <section className="page-gutter-x py-20 md:py-32 relative">
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[60vw] h-[30vw] max-h-[300px] rounded-full bg-foreground/3 blur-[120px]" />
         </div>
-        <div className="grid md:grid-cols-12 gap-8">
+        <div className="grid md:grid-cols-12 gap-8 relative">
           <div className="md:col-span-2">
-            <Logo size={56} />
+            <div className="surface-glass inline-block p-4 rounded-sm">
+              <Logo size={56} />
+            </div>
           </div>
           <div className="md:col-span-7">
-            <p className="display text-white text-4xl md:text-6xl leading-[1]">
-              An artifact is a decision.<br/>
-              <span className="text-white/50">To make it. To own it. To refuse everything it is not.</span>
+            <p className="display text-foreground text-3xl sm:text-4xl md:text-5xl lg:text-6xl leading-[1] text-balance">
+              {t.home.philosophy1}<br/>
+              <span className="text-foreground/50">{t.home.philosophy2}</span>
             </p>
           </div>
-          <div className="md:col-span-3 md:mt-8 space-y-6 text-white/70">
-            <p className="text-sm">
-              NØRMA operates outside the coordinates of retail. What we release
-              is intended for those who understand that scarcity is meaning.
-            </p>
-            <p className="text-sm">
-              Every artifact is documented, numbered, and released to a
-              deliberately incomplete audience.
-            </p>
-            <div className="mono-label text-white/50 pt-4 border-t border-white/10">
-              EST. MMXXVI
-            </div>
+          <div className="md:col-span-3 md:mt-8 space-y-6 text-foreground/70">
+            <p className="text-sm">{ti(t.home.philosophy3)}</p>
+            <p className="text-sm">{t.home.philosophy4}</p>
           </div>
         </div>
       </section>
 
+      <ProductModal product={selected} onClose={() => setSelected(null)} />
       <Footer />
     </main>
   );
@@ -157,11 +145,11 @@ function Home() {
 function SplitReveal({ children }: { children: React.ReactNode }) {
   return (
     <motion.h2
-      initial={{ clipPath: "inset(0 0 100% 0)", opacity: 0 }}
-      whileInView={{ clipPath: "inset(0 0 0% 0)", opacity: 1 }}
-      viewport={{ once: true, margin: "-100px" }}
-      transition={{ duration: 1.3, ease: [0.7, 0, 0.2, 1] }}
-      className="display text-white text-6xl md:text-9xl leading-[0.95]"
+      initial={{ opacity: 0, y: 48 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.15 }}
+      transition={{ duration: 1.1, ease: [0.7, 0, 0.2, 1] }}
+      className="display text-foreground text-4xl sm:text-5xl md:text-7xl lg:text-9xl leading-[0.95] text-balance"
     >
       {children}
     </motion.h2>

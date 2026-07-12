@@ -1,75 +1,53 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Footer } from "@/components/Footer";
+import { Footer } from "@/components/layout/Footer";
+import { useI18n } from "@/lib/i18n/context";
 
 export const Route = createFileRoute("/faq")({
   head: () => ({
     meta: [
-      { title: "FAQ — NØRMA®" },
+      { title: "FAQ — NAME®" },
       { name: "description", content: "Questions frequently asked of the artifact." },
-      { property: "og:title", content: "FAQ — NØRMA®" },
+      { property: "og:title", content: "FAQ — NAME®" },
       { property: "og:description", content: "Questions frequently asked of the artifact." },
     ],
   }),
   component: FAQ,
 });
 
-const ITEMS = [
-  {
-    q: "What exactly is an artifact?",
-    a: "A digital object issued by NØRMA. Every artifact is a completed intention — a pack, a skin, or a tool released as a numbered edition. It is not a product because a product implies replacement. An artifact does not want to be replaced.",
-  },
-  {
-    q: "How is my artifact delivered?",
-    a: "Instantaneously. Upon confirmation of your order, your artifact is transmitted through your account and remains accessible for the duration of the current epoch. There is no packaging, no waiting, no ceremony beyond the one you invent for yourself.",
-  },
-  {
-    q: "Do you accept returns?",
-    a: "No. An artifact, once received, cannot be un-received. If it does not resonate with you, you have not made a mistake — you have participated in the culture. Consider the transaction a form of donation to your future understanding.",
-  },
-  {
-    q: "Is there a warranty?",
-    a: "Artifacts are supported for the lifetime of the platform they were released for. Beyond that, they remain in your possession as historical documents. We do not guarantee compatibility with a world that has moved on.",
-  },
-  {
-    q: "How do I contact support?",
-    a: "Support is available through the channels documented in /doc. We respond within 48 hours in language rather than macros.",
-  },
-  {
-    q: "Why the strange language?",
-    a: "Because ordinary language sold you the ordinary internet. If you would like a normal shop, there are many.",
-  },
-];
-
 function FAQ() {
   const [open, setOpen] = useState<number | null>(0);
+  const { t, ti } = useI18n();
+
   return (
-    <main className="pt-28">
-      <section className="px-6 md:px-10 pb-16">
-        <div className="mono-label text-white/50 mb-6">DOCUMENT / FAQ</div>
-        <h1 className="display text-white text-7xl md:text-[10rem] leading-none">
-          Questions,<br/><span className="text-white/40">and their limits.</span>
+    <main className="page-offset-top">
+      <section className="page-gutter-x pb-12 md:pb-16">
+        <h1 className="page-display-title">
+          <span className="silver-text">{t.faq.title1}</span><br/>
+          <span className="text-foreground/40">{t.faq.title2}</span>
         </h1>
       </section>
 
-      <section className="border-t border-white/10">
-        {ITEMS.map((item, i) => {
+      <section className="border-t border-border">
+        {t.faq.items.map((item, i) => {
           const isOpen = open === i;
           return (
-            <div key={i} className="border-b border-white/10">
+            <div key={i} className="border-b border-border">
               <button
                 onClick={() => setOpen(isOpen ? null : i)}
-                className="w-full px-6 md:px-10 py-8 md:py-10 flex items-start justify-between gap-6 text-left group"
+                className="w-full page-gutter-x py-6 sm:py-8 md:py-10 flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 sm:gap-6 text-left group"
               >
-                <div className="flex items-start gap-6 md:gap-10">
-                  <span className="mono-label text-white/40 pt-3">{(i + 1).toString().padStart(2, "0")}</span>
-                  <span className="display text-white text-3xl md:text-5xl leading-[1.05] group-hover:text-white/70 transition">
+                <div className="flex items-start gap-4 sm:gap-6 md:gap-10 min-w-0 flex-1">
+                  <span className="mono-label text-foreground/30 pt-1 sm:pt-3 tabular-nums shrink-0">
+                    {(i + 1).toString().padStart(2, "0")}
+                  </span>
+                  <span className="display text-foreground text-2xl sm:text-3xl md:text-4xl lg:text-5xl leading-[1.05] group-hover:text-foreground/70 transition text-balance">
                     {item.q}
                   </span>
                 </div>
-                <span className="mono-label text-white/60 pt-4 shrink-0">
-                  {isOpen ? "— CLOSE" : "+ OPEN"}
+                <span className="mono-label text-foreground/40 sm:pt-4 shrink-0 self-start sm:self-auto">
+                  {isOpen ? t.faq.close : t.faq.open}
                 </span>
               </button>
               <AnimatePresence initial={false}>
@@ -81,8 +59,8 @@ function FAQ() {
                     transition={{ duration: 0.5, ease: [0.7, 0, 0.2, 1] }}
                     className="overflow-hidden"
                   >
-                    <div className="px-6 md:px-10 pb-10 md:pl-32 max-w-3xl text-white/70 text-lg leading-relaxed">
-                      {item.a}
+                    <div className="page-gutter-x pb-8 md:pb-10 md:pl-[clamp(3rem,12vw,8rem)] max-w-3xl text-foreground/70 text-base sm:text-lg leading-relaxed">
+                      {ti(item.a)}
                     </div>
                   </motion.div>
                 )}
