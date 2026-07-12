@@ -2,7 +2,7 @@
 
 Site vitrine e-commerce artistique pour **NAME** — artefacts culturels, esthétique mangaka / encre japonaise, bilingue FR/EN.
 
-**Site en ligne :** https://nxlogan-n-rma-artifacts.sassy-rondeletia.workers.dev  
+**Site en ligne :** https://nxlogan.github.io/n-rma-artifacts/  
 **Code source :** https://github.com/NXLogan/n-rma-artifacts
 
 ## Stack
@@ -11,7 +11,7 @@ Site vitrine e-commerce artistique pour **NAME** — artefacts culturels, esthé
 - [TanStack Router](https://tanstack.com/router) (routing fichier)
 - Tailwind CSS v4
 - Framer Motion
-- Déploiement SSR via Nitro (Cloudflare Workers)
+- Déploiement statique (GitHub Pages, mode SPA)
 
 ## Structure du projet
 
@@ -72,13 +72,19 @@ Sans `DISCORD_WEBHOOK_URL`, le formulaire contact affiche un message de configur
 
 ## Déploiement
 
-Le build génère `.output/` (Nitro + Cloudflare). Après `npm run build` :
+Le site est publié automatiquement sur **GitHub Pages** à chaque push sur `main` (workflow `.github/workflows/deploy-github-pages.yml`).
+
+Build manuel :
 
 ```bash
-npx wrangler deploy --config .output/server/wrangler.json
+NITRO_PRESET=github_pages npm run build:pages
 ```
 
-Un workflow GitHub Actions (`.github/workflows/deploy-cloudflare.yml`) déploie automatiquement sur push vers `main` si les secrets `CLOUDFLARE_API_TOKEN` et `CLOUDFLARE_ACCOUNT_ID` sont configurés dans le dépôt.
+Les fichiers statiques sont dans `dist/client/` (`index.html`, `404.html` pour le routing SPA).
+
+URL publique : https://nxlogan.github.io/n-rma-artifacts/
+
+Pour le formulaire contact en production, ajoute le secret GitHub `DISCORD_WEBHOOK_URL` (injecté comme `VITE_DISCORD_WEBHOOK_URL` au build). Sans webhook, le message est copié dans le presse-papiers et Discord s’ouvre.
 
 ## Pages
 

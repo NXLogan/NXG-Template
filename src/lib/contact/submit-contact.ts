@@ -1,16 +1,28 @@
-import { createServerFn } from "@tanstack/react-start";
+import { DISCORD_URL } from "@/lib/config/social";
 
 type ContactPayload = {
   subject: string;
   message: string;
 };
 
-type ContactResult =
+export type ContactResult =
   | { ok: true }
   | { ok: false; error: "validation" | "not_configured" | "discord_failed" };
 
+function formatTransmission(payload: ContactPayload): string {
+  return `NAME — Transmission\nSubject: ${payload.subject}\n\n${payload.message}`;
+}
+
+async function copyTransmission(payload: ContactPayload): Promise<void> {
+  try {
+    await navigator.clipboard.writeText(formatTransmission(payload));
+  } catch {
+    // Clipboard may be blocked; Discord fallback still works.
+  }
+}
+
 async function postToDiscordWebhook(payload: ContactPayload): Promise<ContactResult> {
-  const webhookUrl = process.env.DISCORD_WEBHOOK_URL;
+  const webhookUrl = import.meta.env.VITE_DISCORD_WEBHOOK_URL;
   if (!webhookUrl) {
     return { ok: false, error: "not_configured" };
   }
@@ -38,19 +50,26 @@ async function postToDiscordWebhook(payload: ContactPayload): Promise<ContactRes
   return { ok: true };
 }
 
-export const submitContact = createServerFn({ method: "POST" })
-  .validator((data: ContactPayload) => {
-    const subject = data.subject?.trim() ?? "";
-    const message = data.message?.trim() ?? "";
-    if (!subject || !message) {
-      throw new Error("validation");
+/** Client-side contact submission (GitHub Pages / static hosting). */
+export async function submitContact(payload: ContactPayload): Promise<ContactResult> {
+  const subject = payload.subject?.trim() ?? "";
+  const message = payload.message?.trim() ?? "";
+  if (!subject || !message) {
+    return { ok: false, error: "validation" };
+  }
+
+  const data = { subject, message };
+
+  try {
+    const webhookResult = await postToDiscordWebhook(data);
+    if (webhookResult.ok) {
+      return webhookResult;
     }
-    return { subject, message };
-  })
-  .handler(async ({ data }): Promise<ContactResult> => {
-    try {
-      return await postToDiscordWebhook(data);
-    } catch {
-      return { ok: false, error: "discord_failed" };
-    }
-  });
+  } catch {
+    // Webhook blocked (CORS) or unreachable — fall back to Discord channel.
+  }
+
+  await copyTransmission(data);
+  window.open(DISCORD_URL, "_blank", "noopener,noreferrer");
+  return { ok: true };
+}

@@ -5,16 +5,31 @@ import { nitro } from "nitro/vite";
 import { defineConfig } from "vite";
 import tsConfigPaths from "vite-tsconfig-paths";
 
+const githubPages = process.env.NITRO_PRESET === "github_pages";
+const ghBase = "/n-rma-artifacts/";
+
 export default defineConfig(({ command }) => ({
+  base: githubPages ? ghBase : "/",
   server: {
     port: 8080,
     strictPort: false,
   },
   plugins: [
-    tanstackStart({
-      server: { entry: "server" },
-    }),
-    ...(command === "build"
+    tanstackStart(
+      githubPages
+        ? {
+            spa: {
+              enabled: true,
+            },
+            router: {
+              basepath: ghBase.replace(/\/$/, ""),
+            },
+          }
+        : {
+            server: { entry: "server" },
+          },
+    ),
+    ...(command === "build" && !githubPages
       ? [nitro({ preset: "cloudflare_module" })]
       : []),
     viteReact(),

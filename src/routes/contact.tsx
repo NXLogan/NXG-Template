@@ -101,7 +101,7 @@ function Contact() {
     setStatus("sending");
 
     try {
-      const result = await submitContact({ data: { subject, message } });
+      const result = await submitContact({ subject, message });
       if (result.ok) {
         setStatus("success");
         setSubject("");
