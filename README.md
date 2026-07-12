@@ -1,6 +1,9 @@
-# OLYMP
+# NAME
 
-Site vitrine e-commerce artistique pour **OLYMP** — artefacts culturels, esthétique argent/encre, bilingue FR/EN.
+Site vitrine e-commerce artistique pour **NAME** — artefacts culturels, esthétique mangaka / encre japonaise, bilingue FR/EN.
+
+**Site en ligne :** https://nxlogan-n-rma-artifacts.sassy-rondeletia.workers.dev  
+**Code source :** https://github.com/NXLogan/n-rma-artifacts
 
 ## Stack
 
@@ -26,7 +29,7 @@ src/
 │   ├── cart/        État panier
 │   ├── catalog/     Données produits
 │   ├── config/      URLs & constantes
-│   ├── contact/       Server function formulaire (submit-contact.ts)
+│   ├── contact/     Server function formulaire (submit-contact.ts)
 │   ├── i18n/        Traductions FR/EN
 │   ├── server/      Gestion erreurs SSR
 │   └── ui/          Overlays, transitions de page
@@ -45,7 +48,7 @@ npm install
 npm run dev
 ```
 
-L’app tourne par défaut sur `http://localhost:5173` (ou le port indiqué dans le terminal).
+L’app tourne par défaut sur `http://localhost:8080` (ou le port indiqué dans le terminal).
 
 ## Variables d’environnement
 
@@ -72,8 +75,10 @@ Sans `DISCORD_WEBHOOK_URL`, le formulaire contact affiche un message de configur
 Le build génère `.output/` (Nitro + Cloudflare). Après `npm run build` :
 
 ```bash
-npx wrangler deploy
+npx wrangler deploy --config .output/server/wrangler.json
 ```
+
+Un workflow GitHub Actions (`.github/workflows/deploy-cloudflare.yml`) déploie automatiquement sur push vers `main` si les secrets `CLOUDFLARE_API_TOKEN` et `CLOUDFLARE_ACCOUNT_ID` sont configurés dans le dépôt.
 
 ## Pages
 
@@ -84,6 +89,11 @@ npx wrangler deploy
 | `/faq` | Questions fréquentes |
 | `/doc` | Essai / documentation |
 | `/contact` | Formulaire de transmission |
+| `/checkout` | Finalisation de commande |
+
+## Communauté
+
+Discord : https://discord.gg/khM33RMJDF
 
 ## Livraison client
 
